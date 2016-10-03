@@ -1,7 +1,7 @@
-﻿namespace VasContainer
-{
-    using System;
+﻿using System;
 
+namespace DependencyInjector
+{
     [Flags]
     public enum ContainerOptions
     {

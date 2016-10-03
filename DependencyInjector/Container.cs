@@ -1,19 +1,16 @@
-﻿namespace VasContainer
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
+namespace DependencyInjector
+{
     public class Container
     {
         private IDictionary<Type, Type> dependencies;
-
         private ContainerOptions options;
-
         private const ContainerOptions defaultOptions = ContainerOptions.None;
 
-        public Container()
-            : this(defaultOptions)
+        public Container() : this(defaultOptions)
         {
         }
 
@@ -32,12 +29,8 @@
 
         public T Resolve<T>() where T : class
         {
-            var classType = typeof(T);
-
-            var constructors = classType
+            var constructors = typeof(T)
                 .GetConstructors()
-                // create a smarter way of choosing a constructor
-                // maybe using enum flags :-P
                 .OrderByDescending(x => x.GetParameters().Count());
 
             if (!constructors.Any())
@@ -47,18 +40,15 @@
 
             foreach (var constructor in constructors)
             {
-                // get the constructor parameters
                 var parameters = constructor.GetParameters();
 
-                // if the constructor has no parameters - instantiate the object and return it;
                 if (parameters.Length == 0)
                 {
-                    var result = Activator.CreateInstance<T>();
-                    return result;
+                    return Activator.CreateInstance<T>();
                 }
                 else
                 {
-                    var parameterObjects = new List<object>();
+                    List<object> parameterObjects = new List<object>();
 
                     foreach (var parameter in parameters)
                     {
@@ -68,7 +58,6 @@
                         {
                             if (parameter.HasDefaultValue)
                             {
-                                // using default value
                                 var res = Convert.ChangeType(parameter.DefaultValue, parameterType);
                                 parameterObjects.Add(res);
                                 continue;
@@ -78,11 +67,7 @@
                         if (parameterType.IsAbstract || parameterType.IsInterface)
                         {
                             var concreteObjectType = this.dependencies[parameterType];
-                            var method =
-                                typeof(Container)
-                                    .GetMethod("Resolve")
-                                    .MakeGenericMethod(concreteObjectType);
-
+                            var method = typeof(Container).GetMethod("Resolve").MakeGenericMethod(concreteObjectType);
                             var obj = method.Invoke(this, null);
 
                             parameterObjects.Add(obj);
@@ -99,7 +84,7 @@
                         continue;
                     }
 
-                    var createdObject = (T)Activator.CreateInstance(classType, parameterObjects.ToArray());
+                    var createdObject = (T)Activator.CreateInstance(typeof(T), parameterObjects.ToArray());
                     return createdObject;
                 }
             }
