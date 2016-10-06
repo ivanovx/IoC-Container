@@ -8,8 +8,7 @@ namespace DependencyInjector
     {
         private IDictionary<Type, Type> dependencies;
         private ContainerOptions options;
-        private const ContainerOptions defaultOptions = ContainerOptions.None;
-
+        private const ContainerOptions defaultOptions = ContainerOptions.None; // Bug
         public Container() : this(defaultOptions)
         {
         }
@@ -59,7 +58,9 @@ namespace DependencyInjector
                             if (parameter.HasDefaultValue)
                             {
                                 var res = Convert.ChangeType(parameter.DefaultValue, parameterType);
+
                                 parameterObjects.Add(res);
+
                                 continue;
                             }
                         }
@@ -75,6 +76,7 @@ namespace DependencyInjector
                         else if (parameterType.IsPrimitive || parameterType.GetConstructors().Any(x => !x.GetParameters().Any()))
                         {
                             var obj = Activator.CreateInstance(parameterType);
+
                             parameterObjects.Add(obj);
                         }
                     }
@@ -85,6 +87,7 @@ namespace DependencyInjector
                     }
 
                     var createdObject = (T)Activator.CreateInstance(typeof(T), parameterObjects.ToArray());
+
                     return createdObject;
                 }
             }

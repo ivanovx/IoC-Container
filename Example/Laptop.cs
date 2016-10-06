@@ -9,7 +9,6 @@ namespace Example
         {
             this.source = powerSource;
         }
-
         public void DisplayPower()
         {
             Console.WriteLine(this.source.GetPower());
