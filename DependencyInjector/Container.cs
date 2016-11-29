@@ -82,11 +82,7 @@ namespace DependencyInjector
                         continue;
                     }
 
-                    /*var createdObject = (T)Activator.CreateInstance(typeof(T), parameterObjects.ToArray());
-
-                    return createdObject;*/
-
-                    return (T) Activator.CreateInstance(typeof(T), parameterObjects.ToList()); // Array to List
+                    return (T) Activator.CreateInstance(typeof(T), parameterObjects.ToList());
                 }
             }
 
