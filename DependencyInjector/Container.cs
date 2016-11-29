@@ -9,21 +9,13 @@ namespace DependencyInjector
         private readonly IDictionary<Type, Type> dependencies;
         private readonly ContainerOptions options;
 
-        /*private const ContainerOptions DefaultOptions = ContainerOptions.None;
-
-        public Container() : this(DefaultOptions)
-        {
-        }*/
-
         public Container(ContainerOptions options = ContainerOptions.None)
         {
             this.options = options;
             this.dependencies = new Dictionary<Type, Type>();
         }
 
-        public void RegisterType<TDependency, TResolve>()
-            where TDependency : class
-            where TResolve : class
+        public void RegisterType<TDependency, TResolve>() where TDependency : class where TResolve : class
         {
             this.dependencies.Add(typeof(TDependency), typeof(TResolve));
         }
@@ -32,7 +24,7 @@ namespace DependencyInjector
         {
             var constructors = typeof(T)
                 .GetConstructors()
-                .OrderByDescending(x => x.GetParameters().Count());
+                .OrderByDescending(p => p.GetParameters().Count());
 
             if (!constructors.Any())
             {
