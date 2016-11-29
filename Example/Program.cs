@@ -2,11 +2,11 @@
 
 namespace Example
 {
-    public class Program
+    internal static class Program
     {
-        public static void Main(string[] args)
+        internal static void Main(string[] args)
         {
-            Container container = new Container(ContainerOptions.UseDefaultValue);
+            Container container = new Container();
 
             container.RegisterType<IPowerSource, Battery>();
 

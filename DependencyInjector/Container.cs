@@ -6,24 +6,26 @@ namespace DependencyInjector
 {
     public class Container
     {
-        private IDictionary<Type, Type> dependencies;
-        private ContainerOptions options;
-        private const ContainerOptions defaultOptions = ContainerOptions.None; // Bug
-        public Container() : this(defaultOptions)
-        {
-        }
+        private readonly IDictionary<Type, Type> dependencies;
+        private readonly ContainerOptions options;
 
-        public Container(ContainerOptions options)
+        /*private const ContainerOptions DefaultOptions = ContainerOptions.None;
+
+        public Container() : this(DefaultOptions)
+        {
+        }*/
+
+        public Container(ContainerOptions options = ContainerOptions.None)
         {
             this.options = options;
             this.dependencies = new Dictionary<Type, Type>();
         }
 
-        public void RegisterType<TDependencyType, TResolveType>()
-            where TDependencyType : class
-            where TResolveType : class
+        public void RegisterType<TDependency, TResolve>()
+            where TDependency : class
+            where TResolve : class
         {
-            this.dependencies.Add(typeof(TDependencyType), typeof(TResolveType));
+            this.dependencies.Add(typeof(TDependency), typeof(TResolve));
         }
 
         public T Resolve<T>() where T : class
@@ -68,7 +70,9 @@ namespace DependencyInjector
                         if (parameterType.IsAbstract || parameterType.IsInterface)
                         {
                             var concreteObjectType = this.dependencies[parameterType];
-                            var method = typeof(Container).GetMethod("Resolve").MakeGenericMethod(concreteObjectType);
+                            var method = typeof(Container)
+                                .GetMethod("Resolve")
+                                .MakeGenericMethod(concreteObjectType);
                             var obj = method.Invoke(this, null);
 
                             parameterObjects.Add(obj);
@@ -86,13 +90,14 @@ namespace DependencyInjector
                         continue;
                     }
 
-                    var createdObject = (T)Activator.CreateInstance(typeof(T), parameterObjects.ToArray());
+                    /*var createdObject = (T)Activator.CreateInstance(typeof(T), parameterObjects.ToArray());
 
-                    return createdObject;
+                    return createdObject;*/
+
+                    return (T) Activator.CreateInstance(typeof(T), parameterObjects.ToList()); // Array to List
                 }
             }
 
             throw new Exception("Could not resolve the dependency");
         }
-    }
-}
+    }}
