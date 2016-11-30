@@ -15,7 +15,9 @@ namespace DependencyInjector
             this.dependencies = new Dictionary<Type, Type>();
         }
 
-        public void RegisterType<TDependency, TResolve>() where TDependency : class where TResolve : class
+        public void RegisterType<TDependency, TResolve>() 
+            where TDependency : class 
+            where TResolve : class
         {
             this.dependencies.Add(typeof(TDependency), typeof(TResolve));
         }
