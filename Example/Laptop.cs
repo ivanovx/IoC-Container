@@ -4,14 +4,16 @@ namespace Example
 {
     public class Laptop
     {
-        private IPowerSource source;
-        public Laptop(IPowerSource powerSource)
+        private readonly IPowerSource source;
+
+        public Laptop(IPowerSource source)
         {
-            this.source = powerSource;
+            this.source = source;
         }
+
         public void DisplayPower()
         {
-            Console.WriteLine(this.source.GetPower());
+            Console.WriteLine(this.source.Power);
         }
     }
 }

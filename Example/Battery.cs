@@ -2,9 +2,12 @@
 {
     public class Battery : IPowerSource
     {
-        public int GetPower()
+        public int Power
         {
-            return -1;
+            get
+            {
+                return -1;
+            }
         }
     }
 }
