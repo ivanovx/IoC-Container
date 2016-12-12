@@ -6,9 +6,9 @@ namespace Example
     {
         private readonly IPowerSource source;
 
-        public Laptop(IPowerSource source)
+        public Laptop(IPowerSource powerSource)
         {
-            this.source = source;
+            this.source = powerSource;
         }
 
         public void DisplayPower()

@@ -16,7 +16,7 @@ namespace DependencyInjector
         }
 
         public void RegisterType<TDependency, TResolve>() 
-            where TDependency : class 
+            where TDependency : class
             where TResolve : class
         {
             this.dependencies.Add(typeof(TDependency), typeof(TResolve));
@@ -43,11 +43,14 @@ namespace DependencyInjector
                 }
                 else
                 {
-                    List<object> parameterObjects = new List<object>();
+                    var parameterObjects = new List<object>();
 
                     foreach (var parameter in parameters)
                     {
                         var parameterType = parameter.ParameterType;
+                        var parameterTypeObjects = parameterType
+                            .GetConstructors()
+                            .Any(p => !p.GetParameters().Any());
 
                         if (this.options.HasFlag(ContainerOptions.UseDefaultValue))
                         {
@@ -71,7 +74,7 @@ namespace DependencyInjector
 
                             parameterObjects.Add(obj);
                         }
-                        else if (parameterType.IsPrimitive || parameterType.GetConstructors().Any(x => !x.GetParameters().Any()))
+                        else if (parameterType.IsPrimitive || parameterTypeObjects)
                         {
                             var obj = Activator.CreateInstance(parameterType);
 
@@ -84,10 +87,11 @@ namespace DependencyInjector
                         continue;
                     }
 
-                    return (T) Activator.CreateInstance(typeof(T), parameterObjects.ToList());
+                    return (T) Activator.CreateInstance(typeof(T), parameterObjects.ToArray());
                 }
             }
 
             throw new Exception("Could not resolve the dependency");
         }
-    }}
+    }
+}
